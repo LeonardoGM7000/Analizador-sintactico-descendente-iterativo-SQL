@@ -83,11 +83,57 @@ public class ASDI implements Parser {
             
             }
 
+            // X es un terminal
+            else if(esTerminal(tabla, X)){
+
+                System.out.println("Error token " + (ip + 1) + ": Simbolo terminal no esperado");
+                hayErrores = true;
+                break;
+            }
+
+            // tabla [X, a] == "" (entrada de error)
+            else if(buscarTabla(tabla, X, a).equals("")){
+                System.out.println("Error token " + (ip + 1) + ": Producción no válida");
+                hayErrores = true;
+                break;
+            }
+
+            // tabla [X, a] == PRODUCCIÓN
+            else{
+
+                String aux = buscarTabla(tabla, X, a);
+                System.out.println(X+" -> "+aux);
+                // Sacamos de la pila
+                pila.pop();
+                String[] produccion_array = aux.split(" ");
+
+                // Verificamos que la producción no genere Epsilon (E) para no ingresarla a la pila
+
+                if(!produccion_array[0].equals("E")){
+
+                    for(int i = produccion_array.length-1; i >= 0; i--)
+                    pila.push(produccion_array[i]);
+                }
+                
+            }
+
 
             // Reasignamos el valor de X con el último elemneto ingresado a la pila
             X = pila.peek();
         }
 
+    }
+
+    // Declaramos funciones auxiliares
+    private boolean esTerminal(String[][] tabla, String X){
+
+        for (int i = 0; i < tabla[0].length; i++) {
+            if (tabla[0][i].equals(X)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private String buscarTabla(String [][] tabla, String X, String a){
