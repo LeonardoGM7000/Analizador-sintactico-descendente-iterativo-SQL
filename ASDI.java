@@ -19,7 +19,33 @@ public class ASDI implements Parser {
     // Reescribimos el método para ingresar la tabla
     @Override
     public boolean parse() {
+        // Declaramos la tabla
+        
+        String[][] tabla = {
+            { "",   "select",               "from",     "distinct",         "*",        ",",            "id",           ".",            "$" },
+            { "Q",  "select D from T",      "",         "",                 "",         "",             "",             "",             "" },
+            { "D",  "",                     "",         "distinct P",       "P",        "",             "P",            "",             "" },
+            { "P",  "",                     "",         "",                 "*",        "",             "A",            "",             "" },
+            { "A",  "",                     "",         "",                 "",         "",             "A2 A1",        "",             "" },
+            { "A1", "",                     "E",        "",                 "",         ", A",          "",             "",             "" },
+            { "A2", "",                     "",         "",                 "",         "",             "id A3",        "",             "" },
+            { "A3", "",                     "E",        "",                 "",         "E",            "",             ". id",         "" },
+            { "T",  "",                     "",         "",                 "",         "",             "T2 T1",        "",             "" },
+            { "T1", "",                     "",         "",                 "",         ", T",          "",             "",             "E" },
+            { "T2", "",                     "",         "",                 "",         "",             "id T3",        "",             "" },
+            { "T3", "",                     "",         "",                 "",         "E",            "id",           "",             "E" }
+    };
 
+   analizarTokens(tokens, tabla);
+
+   if(A.tipo == TipoToken.EOF && !hayErrores){
+        System.out.println("Consulta correcta");
+        return true;
+    } else {
+        System.out.println("Se encontraron errores");
+    }
+
+    return false; 
        
     }
 
@@ -64,7 +90,29 @@ public class ASDI implements Parser {
 
     }
 
+    private String buscarTabla(String [][] tabla, String X, String a){
 
+        int fila = 0;
+        int columna = 0;
+
+        // Buscamos no terminal
+        for (int i = 0; i < tabla.length; i++) {
+            if (tabla[i][0].equals(X)) {
+                fila = i;
+                break;
+            }
+        }
+
+        // Buscamos terminal
+        for (int j = 0; j < tabla[0].length; j++) {
+            if (tabla[0][j].equals(a)) {
+                columna = j;
+                break;
+            }
+        }
+    
+        return tabla[fila][columna];
+    }
    
 
 }
